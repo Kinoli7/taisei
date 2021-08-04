@@ -145,7 +145,7 @@ static void stage6_end(void) {
 }
 
 static void stage6_spellpractice_start(void) {
-	stage6_start();
+	stage6_drawsys_init();
 	skip_background_anim(stage6_update, 3800, &global.timer, &global.frames);
 
 	global.boss = stage6_spawn_elly(BOSS_DEFAULT_SPAWN_POS);

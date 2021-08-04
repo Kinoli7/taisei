@@ -38,10 +38,10 @@ typedef struct Stage6DrawData {
 		PBRModel stairs;
 		PBRModel tower;
 		PBRModel tower_bottom;
+		PBRModel floor;
 
 		// these don't use pbr materials
 		Model *calabi_yau_quintic;
-		Model *top_plate;
 	} models;
 
 	Texture *envmap;

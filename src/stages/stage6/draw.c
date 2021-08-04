@@ -56,13 +56,13 @@ void stage6_drawsys_init(void) {
 
 	stage6_draw_data->envmap = res_texture("stage6/sky");
 	stage6_draw_data->models.calabi_yau_quintic = res_model("stage6/calabi-yau-quintic");
-	stage6_draw_data->models.top_plate = res_model("stage6/top_plate");
 
 	pbr_load_model(&stage6_draw_data->models.rim,          "stage6/rim",          "stage6/rim");
 	pbr_load_model(&stage6_draw_data->models.spires,       "stage6/spires",       "stage6/spires");
 	pbr_load_model(&stage6_draw_data->models.stairs,       "stage6/stairs",       "stage6/stairs");
 	pbr_load_model(&stage6_draw_data->models.tower,        "stage6/tower",        "stage6/tower");
 	pbr_load_model(&stage6_draw_data->models.tower_bottom, "stage6/tower_bottom", "stage6/tower_bottom");
+	pbr_load_model(&stage6_draw_data->models.floor,        "stage6/floor",        "stage6/floor");
 }
 
 void stage6_drawsys_shutdown(void) {
@@ -108,11 +108,7 @@ static void stage6_towertop_draw(vec3 pos) {
 	pbr_draw_model(&stage6_draw_data->models.tower_bottom, &env);
 	pbr_draw_model(&stage6_draw_data->models.rim, &env);
 	pbr_draw_model(&stage6_draw_data->models.spires, &env);
-
-	r_shader("envmap_reflect");
-	r_uniform_sampler("envmap", "stage6/sky");
-	r_uniform_mat4("inv_camera_transform", env.cam_inverse_transform);
-	r_draw_model_ptr(stage6_draw_data->models.top_plate, 0, 0);
+	pbr_draw_model(&stage6_draw_data->models.floor, &env);
 
 	r_disable(RCAP_CULL_FACE);
 	//r_disable(RCAP_DEPTH_WRITE);

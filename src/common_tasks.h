@@ -123,3 +123,14 @@ DECLARE_EXTERN_TASK(
 		glm_ease_t ease;
 	}
 );
+
+// FIXME: rename the other one to common_easing_animatef to make it consistent with the usual convention
+DECLARE_EXTERN_TASK(
+	common_easing_animated,
+	{ 
+		double *value;
+		double to;
+		int duration;
+		glm_ease_t ease;
+	}
+);

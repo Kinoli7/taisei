@@ -196,21 +196,21 @@ TASK_WITH_INTERFACE(elly_intro, ScytheAttack) {
 	STALL;
 	
 }
-/*
-static void elly_insert_interboss_dialog(Boss *b, int t) {
+
+TASK_WITH_INTERFACE(elly_insert_interboss_dialog, BossAttack) {
+	INIT_BOSS_ATTACK(&ARGS);
+	BEGIN_BOSS_ATTACK(&ARGS);
 	stage6_dialog_pre_final();
 }
 
-static void elly_begin_toe(Boss *b, int t) {
-	TIMER(&t);
+TASK_WITH_INTERFACE(elly_begin_toe, BossAttack) {
+	INIT_BOSS_ATTACK(&ARGS);
+	BEGIN_BOSS_ATTACK(&ARGS);
 
-	AT(1) {
-		start_fall_over();
-		stage_unlock_bgm("stage6boss_phase2");
-		stage_start_bgm("stage6boss_phase3");
-	}
+	start_fall_over();
+	stage_unlock_bgm("stage6boss_phase2");
+	stage_start_bgm("stage6boss_phase3");
 }
-*/
 
 TASK(boss_appear, { BoxedBoss boss; }) {
 	Boss *boss = NOT_NULL(ENT_UNBOX(ARGS.boss));
@@ -287,10 +287,12 @@ TASK(spawn_boss, NO_ARGS) {
 	boss_add_attack_from_info_with_args(boss, &stage6_spells.baryon.higgs_boson_uncovered, baryons_args.base);
 	boss_add_attack_from_info_with_args(boss, &stage6_spells.extra.curvature_domination, baryons_args.base);
 	boss_add_attack_task_with_args(boss, AT_Move, "Explode", 4, 0, TASK_INDIRECT(BaryonsAttack, stage6_boss_baryons_explode).base, NULL, baryons_args.base);
+	boss_add_attack_task(boss, AT_Move, "Move to center", 4, 0, TASK_INDIRECT(BossAttack, elly_goto_center), NULL);
+
+	// XXX: can this be simplified now?
+	boss_add_attack_task(boss, AT_Immediate, "Final dialog", 0, 0, TASK_INDIRECT(BossAttack, elly_insert_interboss_dialog), NULL);
+	boss_add_attack_task(boss, AT_Move, "ToE transition", 7, 0, TASK_INDIRECT(BossAttack, elly_begin_toe), NULL);
 	/*
-	boss_add_attack(b, AT_Move, "Move to center", 4, 0, elly_goto_center, NULL);
-	boss_add_attack(b, AT_Immediate, "Final dialog", 0, 0, elly_insert_interboss_dialog, NULL);
-	boss_add_attack(b, AT_Move, "ToE transition", 7, 0, elly_begin_toe, NULL);
 	boss_add_attack_from_info(b, &stage6_spells.final.theory_of_everything, false);*/
 	boss_engage(boss);
 	WAIT_EVENT(&global.boss->events.defeated);
@@ -299,7 +301,6 @@ TASK(spawn_boss, NO_ARGS) {
 }
 
 DEFINE_EXTERN_TASK(stage6_timeline) {
-
 	INVOKE_TASK_DELAYED(100, hacker_fairy, .pos = VIEWPORT_W / 2.0, .move = move_linear(2.0 * I));
 
 	for(int i = 0; i < 20; i++) {
